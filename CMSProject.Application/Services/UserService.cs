@@ -120,25 +120,5 @@ namespace CMSProject.Application.Services
             });
         }
 
-        public async Task AssignContentToUserAsync(int userId, int contentId)
-        {
-            var user = await _unitOfWork.Users.GetByIdAsync(userId);
-            if (user == null)
-                throw new NotFoundException($"User with id {userId} not found");
-
-            var content = await _unitOfWork.Contents.GetByIdAsync(contentId);
-            if (content == null)
-                throw new NotFoundException($"Content with id {contentId} not found");
-
-            await _unitOfWork.SaveChangesAsync();
-
-            // İlgili cache'leri temizle
-            await _cacheService.RemoveAsync($"user_{userId}_contents");
-        }
-
-        public Task<int> UserAsync(UserDto userDto)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

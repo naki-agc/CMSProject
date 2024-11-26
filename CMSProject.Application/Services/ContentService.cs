@@ -70,23 +70,6 @@ namespace CMSProject.Application.Services
             return content.Id;
         }
 
-        public async Task<ContentDto> GetContentWithVariantAsync(int contentId, int userId)
-        {
-            string cacheKey = $"content_{contentId}_user_{userId}_variant";
-            return await _cacheService.GetOrSetAsync(cacheKey, async () =>
-            {
-                var content = await _unitOfWork.Contents.GetByIdAsync(contentId);
-                if (content == null)
-                    throw new NotFoundException($"Content with id {contentId} not found");
-
-                // Kullanıcıya özel varyant seçim lojiği
-                var selectedVariant = await SelectVariantForUser(content, userId);
-                content.Variants = new List<ContentVariant> { selectedVariant };
-
-                return content.Adapt<ContentDto>();
-            });
-        }
-
         public async Task<IEnumerable<ContentDto>> GetContentsByCategoryAsync(int categoryId)
         {
             string cacheKey = $"contents_category_{categoryId}";
